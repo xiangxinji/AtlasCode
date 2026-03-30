@@ -11,5 +11,11 @@
     "@types/node": "^22.0.0",
     "tsx": "^4.7.0",
     "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.5.31",
+    "vscode-jsonrpc": "^8.2.1",
+        "glob": "^13.0.6",
+    "web-tree-sitter": "^0.26.7"
   }
 }
