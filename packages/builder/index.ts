@@ -1,5 +1,6 @@
 import { DependencyAnalyzer } from "../core/src/repo-map";
 import { ProjectDetector } from "../core/src/env/project-detector";
+import { ProjectRulesExtractor } from "../core/src/rules";
 
 export interface BuilderOptions {
     projectPath: string;
@@ -23,13 +24,16 @@ export class Builder {
 
         const analyzer = new DependencyAnalyzer({
             scanOptions: {
-                framework: framework,  
+                framework: framework,
                 verbose: true
             }
         });
         await analyzer.initialize();
-        const result = analyzer.scanDirectory(this.context.projectPath);
-        console.log(result);
+        // const result = analyzer.scanDirectory(this.context.projectPath);
+
+        const projectRulesExtractor = new ProjectRulesExtractor(this.context.projectPath);
+        const projectRules = projectRulesExtractor.extract();
+        console.log(projectRules.activeRules);
     }
 
 }
