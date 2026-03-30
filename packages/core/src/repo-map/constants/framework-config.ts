@@ -1,9 +1,5 @@
 import { ScanOptions } from './scan-options';
-
-/**
- * 支持的框架类型
- */
-export type Framework = 'vue' | 'node' | 'java';
+import { SupportedFramework } from '@/types/env';
 
 /**
  * 框架特定的配置接口
@@ -72,7 +68,7 @@ const JAVA_IGNORE_PATTERNS = [
 /**
  * 各框架的配置定义
  */
-export const FRAMEWORK_CONFIGS: Record<Framework, FrameworkConfig> = {
+export const FRAMEWORK_CONFIGS: Record<SupportedFramework, FrameworkConfig> = {
   vue: {
     name: 'Vue',
     description: 'Vue.js 项目配置',
@@ -113,14 +109,14 @@ export const FRAMEWORK_CONFIGS: Record<Framework, FrameworkConfig> = {
 /**
  * 获取框架配置
  */
-export function getFrameworkConfig(framework: Framework): FrameworkConfig {
+export function getFrameworkConfig(framework: SupportedFramework): FrameworkConfig {
   return FRAMEWORK_CONFIGS[framework];
 }
 
 /**
  * 将框架配置转换为扫描选项
  */
-export function frameworkToScanOptions(framework: Framework): ScanOptions {
+export function frameworkToScanOptions(framework: SupportedFramework): ScanOptions {
   const config = getFrameworkConfig(framework);
 
   return {
@@ -133,21 +129,21 @@ export function frameworkToScanOptions(framework: Framework): ScanOptions {
 /**
  * 获取框架需要的解析器列表
  */
-export function getFrameworkParsers(framework: Framework): string[] {
+export function getFrameworkParsers(framework: SupportedFramework): string[] {
   return FRAMEWORK_CONFIGS[framework].parsers;
 }
 
 /**
  * 验证框架类型
  */
-export function isValidFramework(value: string): value is Framework {
+export function isValidFramework(value: string): value is SupportedFramework {
   return ['vue', 'node', 'java'].includes(value);
 }
 
 /**
  * 自动检测项目框架（基于项目文件）
  */
-export function detectProjectFramework(projectPath: string): Framework | null {
+export function detectProjectFramework(projectPath: string): SupportedFramework | null {
   const fs = require('fs');
   const path = require('path');
 

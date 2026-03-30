@@ -1,4 +1,11 @@
 
-import { LspAnalyzer } from './core/src/lsp';
-import { DependencyAnalyzer } from './core/src/repo-map';
 
+
+
+import { Builder } from './builder';
+
+const build = new Builder({
+    projectPath: 'C:\\codes\\cybercloud\\cybercloud-app'
+});
+
+build.build();

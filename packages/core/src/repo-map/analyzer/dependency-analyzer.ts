@@ -1,10 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 import { globSync } from 'glob';
 import { FileProcessorFactory } from '../processors/processor-factory';
 import { ParserManager } from '../parsers/parser-manager';
 import { ScanOptions, DEFAULT_SCAN_OPTIONS, buildIgnorePatterns, shouldIgnorePath } from '../constants/scan-options';
-import { Framework, frameworkToScanOptions, getFrameworkConfig } from '../constants/framework-config';
+import { frameworkToScanOptions, getFrameworkConfig } from '../constants/framework-config';
+import { SupportedFramework } from '@/types/env';
 
 /**
  * 扫描统计信息
@@ -26,7 +28,7 @@ export class DependencyAnalyzer {
   private parserManager: ParserManager;
   private scanOptions: ScanOptions;
   private statistics: ScanStatistics;
-  private framework?: Framework;
+  private framework?: SupportedFramework;
 
   constructor(
     {
@@ -79,22 +81,16 @@ export class DependencyAnalyzer {
    * 自动检测 WASM 解析器文件路径
    */
   private detectParserPath(): string {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
     // 尝试多个可能的路径位置
-    const possiblePaths = [
-      path.join(process.cwd(), 'src', 'parsers'),           // 开发环境
-      path.join(__dirname, '..', 'parsers'),                // 相对于 dist 目录
-      path.join(__dirname, 'parsers'),                      // 当前目录下的 parsers
-      path.join(process.cwd(), 'parsers'),                  // 项目根目录
-    ];
+    const testPath = path.join(__dirname, '..' , 'parsers');
 
-    for (const testPath of possiblePaths) {
-      if (fs.existsSync(testPath)) {
-        const files = fs.readdirSync(testPath);
-        const hasWasmFiles = files.some(file => file.endsWith('.wasm'));
-        if (hasWasmFiles) {
-          console.log(`📂 Using parser path: ${testPath}`);
-          return testPath;
-        }
+    if (fs.existsSync(testPath)) {
+      const files = fs.readdirSync(testPath);
+      const hasWasmFiles = files.some(file => file.endsWith('.wasm'));
+      if (hasWasmFiles) {
+        console.log(`📂 Using parser path: ${testPath}`);
+        return testPath;
       }
     }
 
