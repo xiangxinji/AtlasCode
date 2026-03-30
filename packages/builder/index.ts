@@ -1,8 +1,5 @@
-import { DependencyAnalyzer } from "../core/src/repo-map";
+import { DependencyAnalyzer,  } from "../core/src/repo-map";
 import { ProjectDetector } from "../core/src/env/project-detector";
-import { ProjectRulesExtractor } from "../core/src/rules";
-import { RepoMapExtractor } from "@/core/src/repo-map/extractor/extractor";
-import { PageRankReranker } from "@/core/src/repo-map/reranker/reranker";
 
 export interface BuilderOptions {
     projectPath: string;
@@ -32,16 +29,17 @@ export class Builder {
             scanOptions: {
                 framework: framework,
                 verbose: true
-            }
+            },
+            projectDir: this.context.projectPath
         });
 
         await analyzer.initialize();
-        const result = analyzer.scanDirectory(this.context.projectPath);
+        analyzer.scanDirectory();
 
 
-        const e = new RepoMapExtractor();
-        console.log(e.sortByImportance(e.buildStandardMap(result)));
+        console.log(analyzer.result);
         
+
     }
 
 }

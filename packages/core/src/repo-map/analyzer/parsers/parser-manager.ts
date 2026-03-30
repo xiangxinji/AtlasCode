@@ -1,7 +1,7 @@
 import { Parser, Query, Language } from 'web-tree-sitter';
 import * as fs from 'fs';
 import * as path from 'path';
-import { QUERIES, WASM_FILES } from '../analyzer/constants/queries';
+import { QUERIES, WASM_FILES } from '../constants/queries';
 import { BaseFileProcessor } from '../processors/base-processor';
 import { ParserConfig } from '@/types/repo-map';
 

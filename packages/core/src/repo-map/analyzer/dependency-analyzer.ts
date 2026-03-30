@@ -29,19 +29,24 @@ export class DependencyAnalyzer {
   private scanOptions: ScanOptions;
   private statistics: ScanStatistics;
   private framework?: SupportedFramework;
+  private projectDir: string;
+
+  public result: Record<string, string[]> = {};
 
   constructor(
     {
       parserPath,
-      scanOptions
+      scanOptions,
+      projectDir
     }: {
       parserPath?: string,
-      scanOptions: ScanOptions
+      scanOptions: ScanOptions,
+      projectDir: string
     }
   ) {
     // 提取框架类型
     this.framework = scanOptions.framework;
-
+    this.projectDir = projectDir;
     // 如果没有提供路径，则自动检测 WASM 文件位置
     const defaultParserPath = parserPath || this.detectParserPath();
 
@@ -83,7 +88,7 @@ export class DependencyAnalyzer {
   private detectParserPath(): string {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     // 尝试多个可能的路径位置
-    const testPath = path.join(__dirname, '..' , 'parsers');
+    const testPath = path.join(__dirname, '..', 'parsers');
 
     if (fs.existsSync(testPath)) {
       const files = fs.readdirSync(testPath);
@@ -190,7 +195,7 @@ export class DependencyAnalyzer {
   /**
    * 扫描目录并分析所有文件
    */
-  scanDirectory(dir: string, options?: Partial<ScanOptions>): Record<string, string[]> {
+  scanDirectory(options?: Partial<ScanOptions>): void {
     // 如果提供了选项，更新当前选项
     if (options) {
       this.setScanOptions(options);
@@ -199,7 +204,7 @@ export class DependencyAnalyzer {
     // 重置统计信息
     this.resetStatistics();
 
-    const absPath = path.resolve(dir).replace(/\\/g, '/');
+    const absPath = path.resolve(this.projectDir).replace(/\\/g, '/');
 
     // 构建文件扩展名模式
     const extensions = this.scanOptions.extensions || DEFAULT_SCAN_OPTIONS.extensions || [];
@@ -254,6 +259,55 @@ export class DependencyAnalyzer {
       console.log(`   Errors: ${this.statistics.errors}`);
     }
 
-    return result;
+    this.result = result;
+  }
+
+  /**
+   * 🌟 热更新：局部更新内存中指定文件的依赖图
+   * @param filePath 可以是绝对路径，也可以是相对于 projectDir 的路径
+   * @param content 文件的最新文本内容（若不传，则默认从磁盘重新读取）
+   */
+  public patch(filePath: string, content?: string): void {
+    try {
+      const absPath = path.isAbsolute(filePath)
+        ? filePath.replace(/\\/g, '/')
+        : path.resolve(this.projectDir, filePath).replace(/\\/g, '/');
+
+      // 1. 获取相对路径作为内存 State (this.result) 的 Key
+      const absProjectDir = path.resolve(this.projectDir).replace(/\\/g, '/');
+      const relPath = path.relative(absProjectDir, absPath).replace(/\\/g, '/');
+
+      // 2. 边缘防御：检查文件是否在忽略名单中
+      if (shouldIgnorePath(absPath, this.scanOptions)) {
+        if (this.scanOptions.verbose) {
+          console.log(`⏭️  Skipping patch for ignored file: ${relPath}`);
+        }
+        delete this.result[relPath];
+        return;
+      }
+
+      // 3. 获取文件最新的文本内容
+      const fileContent = content !== undefined ? content : fs.readFileSync(absPath, 'utf8');
+
+      // 4. 定向分发至对应的处理器（Vue / TS 等）
+      const processor = this.factory.getProcessorForFile(absPath);
+
+      if (!processor) {
+        if (this.scanOptions.verbose) {
+          console.warn(`⚠️ No processor found to patch: ${relPath}`);
+        }
+        return;
+      }
+
+      // 5. 局部重新解析并直接打入全局 this.result
+      const analyzeResult = processor.analyze(absPath, fileContent);
+      this.result[relPath] = analyzeResult.dependencies;
+
+      if (this.scanOptions.verbose) {
+        console.log(`⚡ [ACI] Patched memory state for: ${relPath} (${analyzeResult.dependencies.length} dependencies)`);
+      }
+    } catch (error) {
+      console.warn(`⚠️ [Skip] Cannot patch file state for: ${filePath}`);
+    }
   }
 }
