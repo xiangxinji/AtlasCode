@@ -1,5 +1,5 @@
 import { BaseFileProcessor } from './base-processor';
-import { AnalysisResult } from '../types';
+import { AnalysisResult } from '@/types/repo-map';
 
 /**
  * 标准语言文件处理器基类

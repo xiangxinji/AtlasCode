@@ -5,7 +5,7 @@
 import { Builder } from './builder';
 
 const build = new Builder({
-    projectPath: 'C:\\codes\\cybercloud\\cybercloud-app'
+    projectPath: 'C:\\Users\\Administrator\\Desktop\\cybercloud-app'
 });
 
 build.build();

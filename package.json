@@ -14,8 +14,9 @@
   },
   "dependencies": {
     "@vue/compiler-sfc": "^3.5.31",
+    "glob": "^13.0.6",
+    "simple-git": "^3.33.0",
     "vscode-jsonrpc": "^8.2.1",
-        "glob": "^13.0.6",
     "web-tree-sitter": "^0.26.7"
   }
 }

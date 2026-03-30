@@ -8,7 +8,7 @@ import { HtmlFileProcessor } from './html-processor';
 import { CssFileProcessor } from './css-processor';
 import { ScssFileProcessor } from './scss-processor';
 import { LessFileProcessor } from './less-processor';
-import { Framework } from '../constants/framework-config';
+import { SupportedFramework } from '@/types/env';
 
 /**
  * 文件处理器工厂
@@ -17,14 +17,14 @@ import { Framework } from '../constants/framework-config';
 export class FileProcessorFactory {
   private processors: Map<string, BaseFileProcessor> = new Map();
 
-  constructor(framework?: Framework) {
+  constructor(framework?: SupportedFramework) {
     this.registerProcessorsForFramework(framework);
   }
 
   /**
    * 根据框架注册对应的文件处理器
    */
-  private registerProcessorsForFramework(framework?: Framework): void {
+  private registerProcessorsForFramework(framework?: SupportedFramework): void {
     if (framework) {
       // 根据框架只注册需要的处理器
       this.registerProcessorsByFramework(framework);
@@ -37,7 +37,7 @@ export class FileProcessorFactory {
   /**
    * 根据框架类型注册对应的处理器
    */
-  private registerProcessorsByFramework(framework: Framework): void {
+  private registerProcessorsByFramework(framework: SupportedFramework): void {
     switch (framework) {
       case 'vue':
         // Vue 框架需要的处理器（包含 HTML）

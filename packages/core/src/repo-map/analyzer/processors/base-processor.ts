@@ -1,9 +1,9 @@
 import * as path from 'path';
-import { ParserConfig, AnalysisResult } from '../types';
+import { ParserConfig, AnalysisResult } from '@/types/repo-map';
 
 /**
  * 文件处理器抽象基类
- * 定义了所有文件处理器必须实现的接口
+ * 定义了所有文件处理器必须实现的接口 
  */
 export abstract class BaseFileProcessor {
   protected parserConfig?: ParserConfig;

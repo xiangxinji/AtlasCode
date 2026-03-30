@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { globSync } from 'glob';
-import { FileProcessorFactory } from '../processors/processor-factory';
-import { ParserManager } from '../parsers/parser-manager';
-import { ScanOptions, DEFAULT_SCAN_OPTIONS, buildIgnorePatterns, shouldIgnorePath } from '../constants/scan-options';
-import { frameworkToScanOptions, getFrameworkConfig } from '../constants/framework-config';
+import { FileProcessorFactory } from './processors/processor-factory';
+import { ParserManager } from './parsers/parser-manager';
+import { ScanOptions, DEFAULT_SCAN_OPTIONS, buildIgnorePatterns, shouldIgnorePath } from './constants/scan-options';
+import { frameworkToScanOptions, getFrameworkConfig } from './constants/framework-config';
 import { SupportedFramework } from '@/types/env';
 
 /**

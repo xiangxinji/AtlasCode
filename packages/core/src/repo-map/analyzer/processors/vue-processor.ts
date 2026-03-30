@@ -1,5 +1,5 @@
 import { BaseFileProcessor } from './base-processor';
-import { AnalysisResult } from '../types';
+import { AnalysisResult } from '@/types/repo-map';
 
 /**
  * Vue 单文件组件专用处理器

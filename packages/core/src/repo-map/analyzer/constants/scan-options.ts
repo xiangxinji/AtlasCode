@@ -1,5 +1,5 @@
+import { SupportedFramework } from '@/types/env';
 import * as path from 'path';
-import { Framework } from './framework-config';
 
 /**
  * 扫描选项配置接口
@@ -9,7 +9,7 @@ export interface ScanOptions {
   /**
    * 框架类型，用于自动应用框架特定的配置
    */
-  framework?: Framework;
+  framework?: SupportedFramework;
 
   /**
    * 要忽略的目录模式列表
