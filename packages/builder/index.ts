@@ -1,5 +1,5 @@
-import { DependencyAnalyzer,  } from "../core/src/repo-map";
-import { ProjectDetector } from "../core/src/env/project-detector";
+import { DependencyAnalyzer, DirectoryTreeBuilder,  } from "../core/src/repo-map";
+import { ProjectDetector } from "../core/src/rules/project-detector";
 
 export interface BuilderOptions {
     projectPath: string;
@@ -37,7 +37,20 @@ export class Builder {
         analyzer.scanDirectory();
 
 
-        console.log(analyzer.result);
+        const tree = new DirectoryTreeBuilder(this.context.projectPath, {
+            ignorePatterns: [
+                'node_modules',
+                'dist',
+                'packages',
+                '.git',
+                '.cache',
+                '.idea',
+                '.vscode'
+            ],
+        });
+        const treeStr = tree.getTreeString();
+
+        console.log(treeStr);
         
 
     }

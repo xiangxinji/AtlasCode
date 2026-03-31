@@ -18,12 +18,6 @@ export interface ScanOptions {
   ignorePatterns?: string[];
 
   /**
-   * 要忽略的文件名列表（精确匹配）
-   * @deprecated 建议使用 ignorePatterns
-   */
-  ignoreFiles?: string[];
-
-  /**
    * 是否显示详细的扫描信息
    */
   verbose?: boolean;
@@ -41,7 +35,6 @@ export interface ScanOptions {
  */
 export const DEFAULT_SCAN_OPTIONS: ScanOptions = {
   ignorePatterns: [],
-  ignoreFiles: [],
   verbose: false,
   extensions: ['js', 'ts', 'vue', 'java', 'css', 'scss', 'less', 'jsx', 'tsx']
 };
@@ -61,18 +54,10 @@ export function buildIgnorePatterns(options: ScanOptions): string[] {
   return patterns;
 }
 
-/**
- * 检查文件路径是否应该被忽略
- * 简化版：只检查用户提供的 ignorePatterns
- */
-export function shouldIgnorePath(filePath: string, options: ScanOptions): boolean {
-  const fileName = path.basename(filePath);
-  const normalizedPath = filePath.replace(/\\/g, '/');
 
-  // 检查精确文件名匹配
-  if (options.ignoreFiles && options.ignoreFiles.includes(fileName)) {
-    return true;
-  }
+
+export function shouldIgnorePath(filePath: string, options: ScanOptions): boolean {
+  const normalizedPath = filePath.replace(/\\/g, '/');
 
   // 检查是否匹配 ignorePatterns
   if (options.ignorePatterns && options.ignorePatterns.length > 0) {

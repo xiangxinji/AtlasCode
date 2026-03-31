@@ -6,7 +6,7 @@ export interface RankedFile {
   importedBy: string[];// 反向依赖：谁引用了我
 }
 
-export class PageRankReranker {
+export class PageRankReRanker {
   /**
    * 🌟 纯净数据驱动版（严格修复版，无未定义变量）
    */
